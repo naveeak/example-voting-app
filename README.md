@@ -98,3 +98,27 @@ The voting application only accepts one vote per client. It does not register vo
 This isn't an example of a properly architected perfectly designed distributed app... it's just a simple 
 example of the various types of pieces and languages you might see (queues, persistent data, etc), and how to 
 deal with them in Docker at a basic level. 
+
+
+#Course running commands
+###A webserver for the udemy course feb 20,2022
+
+course link https://cglearning.udemy.com/course/learn-docker/learn/lecture/7894022#overview
+
+commands without normal dockercompose
+git clone git@github.com:dockersamples/example-voting-app.git
+cd example-voting-app/
+cd vote/
+cat Dockerfile 
+docker build . -t voting-app
+docker run -d --name=redis redis
+docker run -d -p 5000:80 --link redis:redis  voting-app
+docker run -d --name=db -e POSTGRES_PASSWORD=mysecretpassword postgres:9.4
+cd ../worker/
+docker build . -t worker-app
+docker run -d --link redis:redis --link db:db  worker-app
+cd ../result
+docker build . -t result-app
+docker run -d -p 5001:80 --link db:db result-app
+docker ps
+
